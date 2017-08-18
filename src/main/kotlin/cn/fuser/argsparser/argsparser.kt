@@ -1,9 +1,11 @@
 package cn.fuser.argsparser
 
+import kotlin.reflect.KClass
+
 const val EMPTY_STR: String = ""
 
 enum class FlagType constructor(val type: String) {
-    UNSET("UNSET"), INT("INT"), BOOL("BOOL");
+    UNSET("UNSET"), INT("INT"), BOOL("BOOL"), SHORT("SHORT");
 
     override fun toString(): String {
         return type
@@ -29,8 +31,10 @@ class FlagSet(private val name: String, private val usage: String) {
     }
 
     fun parse(args: Array<String>) {
-        if (args.isEmpty() && flags.isNotEmpty())
+        if (args.isEmpty() && flags.isNotEmpty()) {
             printDefaults()
+            return
+        }
         var cursor = 0
         while (cursor < args.size) {
             var name = args[cursor]
@@ -62,5 +66,10 @@ class FlagSet(private val name: String, private val usage: String) {
 
     fun value(key: String): Any? {
         return flags[key]?.value
+    }
+
+    fun <T : Any> value(name: String, type: KClass<T>): T? {
+        val v = value(name)
+        return if (v != null) v as T else null
     }
 }

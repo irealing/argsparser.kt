@@ -9,7 +9,7 @@ abstract class Flag<T>(val name: String, val default: T?, val usage: String = EM
             field = value
         }
     val value: T?
-        get() = realValue ?: default
+        get() = if (realValue != null) realValue else default
 
     abstract fun parse(v: String): Boolean
 }
@@ -22,15 +22,23 @@ class IntFlag(name: String, default: Int?, usage: String = EMPTY_STR) : Flag<Int
     }
 }
 
-class BoolFlag(name: String, default: Boolean?, usage: String = EMPTY_STR) : Flag<Boolean>(name, default, usage) {
+class BoolFlag(name: String, default: Boolean = false, usage: String = EMPTY_STR) : Flag<Boolean>(name, default, usage) {
     override val type: FlagType
         get() = FlagType.BOOL
     override val needValue: Boolean = false
-    override var realValue: Boolean? = false
-        get() = field ?: false
 
     override fun parse(v: String): Boolean {
         this.realValue = true
+        return true
+    }
+}
+
+class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR) : Flag<Short>(name, default, usage) {
+    override val type: FlagType
+        get() = FlagType.SHORT
+
+    override fun parse(v: String): Boolean {
+        this.realValue = v.toShortOrNull()
         return true
     }
 }
