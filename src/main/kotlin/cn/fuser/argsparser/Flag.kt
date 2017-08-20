@@ -17,7 +17,7 @@ abstract class Flag<T>(val name: String, val default: T?, val usage: String = EM
 class IntFlag(name: String, default: Int?, usage: String = EMPTY_STR) : Flag<Int>(name, default, usage) {
     override val type: FlagType = FlagType.INT
     override fun parse(v: String): Boolean {
-        this.realValue = v.toInt()
+        this.realValue = v.toIntOrNull()
         return true
     }
 }
@@ -39,6 +39,13 @@ class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR)
 
     override fun parse(v: String): Boolean {
         this.realValue = v.toShortOrNull()
+        return true
+    }
+}
+
+class StringFlag(name: String, default: String? = null, usage: String = EMPTY_STR) : Flag<String>(name, default, usage) {
+    override fun parse(v: String): Boolean {
+        this.realValue = v
         return true
     }
 }
