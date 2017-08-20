@@ -20,4 +20,23 @@ class FlagSetTest {
         val n = fs.value("n", Int::class) ?: 0
         assert(n == 1024)
     }
+
+    @Test
+    fun testArray() {
+        val fs = FlagSet("test array", "")
+        fs.register(ArrayFlag("file", null, ""))
+        fs.parse(arrayOf("-file", "/", "-file", "/opt", "-file", "/var"))
+        val files = fs.value("file", Array<String>::class)
+        val f = files ?: arrayOf()
+        assert(compareArray(f, arrayOf("/", "/opt", "/var")))
+    }
+
+    private fun <T> compareArray(a: Array<T>, b: Array<T>): Boolean {
+        assert(a.size == b.size)
+        for (i in 0 until a.size - 1) {
+            if (a[i] == b)
+                return false
+        }
+        return true
+    }
 }

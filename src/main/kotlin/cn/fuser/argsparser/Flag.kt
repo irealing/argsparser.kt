@@ -49,3 +49,13 @@ class StringFlag(name: String, default: String? = null, usage: String = EMPTY_ST
         return true
     }
 }
+
+class ArrayFlag(name: String, default: Array<String>?, usage: String = EMPTY_STR) : Flag<Array<String>>(name, default, usage) {
+    override var realValue: Array<String>? = null
+        get() = container.toTypedArray()
+    private val container = mutableListOf<String>()
+    override fun parse(v: String): Boolean {
+        container.add(v)
+        return true
+    }
+}
