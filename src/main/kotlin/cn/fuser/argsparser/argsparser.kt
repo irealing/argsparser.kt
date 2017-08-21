@@ -23,7 +23,7 @@ class FlagSet(private val name: String, private val usage: String) {
         flags[f.name] = f
     }
 
-    private fun printDefaults() {
+    fun printDefaults() {
         output.println("$name:\n\t$usage")
         for ((k, v) in flags)
             output.println("-$k (${v.type}):\t${v.usage} (default:${v.default})")

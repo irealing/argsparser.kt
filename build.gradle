@@ -23,6 +23,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -33,9 +35,5 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 jar {
-    manifest {
-        attributes 'Main-Class': 'MainKt'
-    }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-
 }
