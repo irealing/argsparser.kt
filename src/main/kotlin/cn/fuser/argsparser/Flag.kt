@@ -44,6 +44,9 @@ class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR)
 }
 
 class StringFlag(name: String, default: String? = null, usage: String = EMPTY_STR) : Flag<String>(name, default, usage) {
+    override val type: FlagType
+        get() = FlagType.STRING
+
     override fun parse(v: String): Boolean {
         this.realValue = v
         return true
@@ -51,6 +54,7 @@ class StringFlag(name: String, default: String? = null, usage: String = EMPTY_ST
 }
 
 class ArrayFlag(name: String, default: Array<String>?, usage: String = EMPTY_STR) : Flag<Array<String>>(name, default, usage) {
+    override val type: FlagType = FlagType.STRING
     override var realValue: Array<String>? = null
         get() = container.toTypedArray()
     private val container = mutableListOf<String>()

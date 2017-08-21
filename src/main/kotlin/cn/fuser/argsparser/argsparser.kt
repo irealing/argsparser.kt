@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 const val EMPTY_STR: String = ""
 
 enum class FlagType constructor(val type: String) {
-    UNSET("UNSET"), INT("INT"), BOOL("BOOL"), SHORT("SHORT");
+    UNSET("UNSET"), INT("INT"), BOOL("BOOL"), SHORT("SHORT"), STRING("STRING");
 
     override fun toString(): String {
         return type
@@ -25,9 +25,8 @@ class FlagSet(private val name: String, private val usage: String) {
 
     private fun printDefaults() {
         output.println("$name:\n\t$usage")
-        for ((k, v) in flags) {
+        for ((k, v) in flags)
             output.println("-$k (${v.type}):\t${v.usage} (default:${v.default})")
-        }
     }
 
     fun parse(args: Array<String>) {
@@ -64,12 +63,7 @@ class FlagSet(private val name: String, private val usage: String) {
         this.parsed = true
     }
 
-    fun value(key: String): Any? {
-        return flags[key]?.value
-    }
+    fun value(key: String): Any? = flags[key]?.value
 
-    fun <T : Any> value(name: String, type: KClass<T>): T? {
-        val v = value(name)
-        return if (v != null) v as T else null
-    }
+    fun <T : Any> value(name: String, clz: KClass<T>): T? = value(name) as? T
 }
