@@ -1,8 +1,9 @@
 package cn.fuser.argsparser
 
-abstract class Flag<T>(val name: String, val default: T?, val usage: String = EMPTY_STR) {
+abstract class Flag<T>(val name: String, val default: T?, val usage: String, require: Boolean) {
     open val type: FlagType = FlagType.UNSET
     open val needValue: Boolean = true
+    open val require = require
     protected open var realValue: T? = null
         get() = field
         set(value) {
@@ -12,9 +13,10 @@ abstract class Flag<T>(val name: String, val default: T?, val usage: String = EM
         get() = if (realValue != null) realValue else default
 
     abstract fun parse(v: String): Boolean
+    open fun validate(): Boolean = !require || value != null
 }
 
-class IntFlag(name: String, default: Int?, usage: String = EMPTY_STR) : Flag<Int>(name, default, usage) {
+class IntFlag(name: String, default: Int?, usage: String = EMPTY_STR, require: Boolean = false) : Flag<Int>(name, default, usage, require) {
     override val type: FlagType = FlagType.INT
     override fun parse(v: String): Boolean {
         this.realValue = v.toIntOrNull()
@@ -22,7 +24,7 @@ class IntFlag(name: String, default: Int?, usage: String = EMPTY_STR) : Flag<Int
     }
 }
 
-class BoolFlag(name: String, default: Boolean = false, usage: String = EMPTY_STR) : Flag<Boolean>(name, default, usage) {
+class BoolFlag(name: String, default: Boolean = false, usage: String = EMPTY_STR, require: Boolean = false) : Flag<Boolean>(name, default, usage, require) {
     override val type: FlagType
         get() = FlagType.BOOL
     override val needValue: Boolean = false
@@ -33,7 +35,7 @@ class BoolFlag(name: String, default: Boolean = false, usage: String = EMPTY_STR
     }
 }
 
-class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR) : Flag<Short>(name, default, usage) {
+class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR, require: Boolean = false) : Flag<Short>(name, default, usage, require) {
     override val type: FlagType
         get() = FlagType.SHORT
 
@@ -43,7 +45,7 @@ class ShortFlag(name: String, default: Short? = null, usage: String = EMPTY_STR)
     }
 }
 
-class StringFlag(name: String, default: String? = null, usage: String = EMPTY_STR) : Flag<String>(name, default, usage) {
+class StringFlag(name: String, default: String? = null, usage: String = EMPTY_STR, require: Boolean = false) : Flag<String>(name, default, usage, require) {
     override val type: FlagType
         get() = FlagType.STRING
 
@@ -53,7 +55,7 @@ class StringFlag(name: String, default: String? = null, usage: String = EMPTY_ST
     }
 }
 
-class ArrayFlag(name: String, default: Array<String>?, usage: String = EMPTY_STR) : Flag<Array<String>>(name, default, usage) {
+class ArrayFlag(name: String, default: Array<String>?, usage: String = EMPTY_STR, require: Boolean = false) : Flag<Array<String>>(name, default, usage, require) {
     override val type: FlagType = FlagType.STRING
     override var realValue: Array<String>? = null
         get() = container.toTypedArray()

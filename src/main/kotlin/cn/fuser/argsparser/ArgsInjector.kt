@@ -15,13 +15,17 @@ class ArgsInjector<out T : Param>(clz: KClass<T>, name: String, describe: String
         for (item in funConstructor.parameters) {
             var flag: Flag<*>? = null
             val name = item.name ?: continue
+            val require = !item.isOptional
+            val usage = name.toUpperCase()
             when (item.type.classifier) {
                 String::class ->
-                    flag = StringFlag(name)
+                    flag = StringFlag(name, usage = usage, require = require)
                 Int::class ->
-                    flag = IntFlag(name, 0)
+                    flag = IntFlag(name, 0, usage = usage, require = require)
                 Boolean::class ->
-                    flag = BoolFlag(name)
+                    flag = BoolFlag(name, usage = usage, require = require)
+                Short::class ->
+                    flag = ShortFlag(name, usage = usage, require = require)
             }
             flag ?: continue
             flagSet.register(flag)
@@ -40,6 +44,4 @@ class ArgsInjector<out T : Param>(clz: KClass<T>, name: String, describe: String
         val value = Array(flags.size) { flags[it]?.value }
         return funConstructor.call(*value)
     }
-
-    fun valdate(): T = TODO()
 }
